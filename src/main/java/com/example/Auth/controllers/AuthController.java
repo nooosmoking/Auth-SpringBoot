@@ -1,19 +1,23 @@
 package com.example.Auth.controllers;
 
+import com.example.Auth.processors.AuthProcessor;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 
 @Controller
-@AllArgsConstructor
 public class AuthController {
+    private final AuthProcessor authProcessor;
 
-//    private final PetService petService;
+    @Autowired
+    public AuthController(AuthProcessor authProcessor) {
+        this.authProcessor = authProcessor;
+    }
 
     @GetMapping("/login")
     public String loginGet(){
@@ -21,8 +25,10 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public String addPet(@RequestParam String username, @RequestParam String password, Model page){
-        boolean isLoggedIn = false;
+    public String loginPost(@RequestParam String username, @RequestParam String password, Model page){
+        authProcessor.setUsername(username);
+        authProcessor.setPassword(password);
+        boolean isLoggedIn = authProcessor.login();
         String message = isLoggedIn? "You are now logged in" : "Login failed!";
         page.addAttribute("message", message);
         return "login.html";
