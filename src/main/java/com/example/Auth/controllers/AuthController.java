@@ -11,13 +11,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @Controller
+@AllArgsConstructor
 public class AuthController {
     private final AuthProcessor authProcessor;
-
-    @Autowired
-    public AuthController(AuthProcessor authProcessor) {
-        this.authProcessor = authProcessor;
-    }
 
     @GetMapping("/login")
     public String loginGet(){
@@ -29,9 +25,10 @@ public class AuthController {
         authProcessor.setUsername(username);
         authProcessor.setPassword(password);
         boolean isLoggedIn = authProcessor.login();
-        String message = isLoggedIn? "You are now logged in" : "Login failed!";
-        page.addAttribute("message", message);
+        if (isLoggedIn){
+            return "redirect:/home";
+        }
+        page.addAttribute("message",  "Login failed!");
         return "login.html";
     }
-
 }
