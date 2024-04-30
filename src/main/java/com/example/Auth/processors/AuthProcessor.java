@@ -1,8 +1,8 @@
 package com.example.Auth.processors;
 
 import com.example.Auth.services.LoggedUserManagementService;
+import com.example.Auth.services.LoginCountService;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -11,16 +11,13 @@ import org.springframework.web.context.annotation.RequestScope;
 @Data
 public class AuthProcessor {
     private final LoggedUserManagementService loggedUserManagementService;
+    private final LoginCountService loginCountService;
 
     private String username;
     private String password;
 
-    @Autowired
-    public AuthProcessor(LoggedUserManagementService loggedUserManagementService){
-        this.loggedUserManagementService = loggedUserManagementService;
-    }
-
     public boolean login(){
+        loginCountService.increment();
         boolean result = username.equals("annette")&&password.equals("password");
         if (result){
             loggedUserManagementService.setUsername(username);
